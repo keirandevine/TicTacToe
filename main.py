@@ -1,9 +1,9 @@
 import tkinter
 from game_engine import GameEngine
 
-engine = GameEngine()
 
-#_________________________________TKinter Window Set Up__________________________________#
+
+#_____________________TKinter Window Set Up / Creation of GameEngine Object____________________________#
 
 window = tkinter.Tk()
 window.title('Tic Tac Toe')
@@ -13,208 +13,71 @@ window.grid_columnconfigure(0, weight=3)
 window.grid_columnconfigure(1, weight=3)
 window.grid_columnconfigure(2, weight=3)
 
-#_________________________________Definition of Fuctions__________________________________#
 
-counter = 1
-playerx_turn = True
-ximage = tkinter.PhotoImage(file='X.png')
-oimage = tkinter.PhotoImage(file='O.png')
-mark_img = ximage
+engine = GameEngine()
 
-square1 = ''
-square2 = ''
-square3 = ''
-square4 = ''
-square5 = ''
-square6 = ''
-square7 = ''
-square8 = ''
-square9 = ''
-
-def mark_square():
+x_img = tkinter.PhotoImage(file='X.png')
+o_img = tkinter.PhotoImage(file='O.png')
+mark_img = tkinter.PhotoImage(file='X.png')
+#_________________________________Definition of Button Comman__________________________________#
+def command():
     player_input = entry.get()
-    global counter
-    global playerx_turn
     global mark_img
-    if playerx_turn:
-        mark_img = ximage
-        mark_str = 'X'
+    global x_img
+    global o_img
+    #______________Check player turn and set appropriate image_____________________#
+    if engine.playerx_turn:
+        mark_img = x_img
     else:
-        mark_img = oimage
-        mark_str = 'O'
+        mark_img = o_img
+
+    #______________________Validate move or prompt player to move again_________________#
+    if engine.validate_move(player_input):
+        engine.mark_square(player_input)
 
 
-    #Mark player's chosen square with their icon or prompt player to choose again if square already occupied
-    if player_input == '1':
-        global square1
-        if square1 == '':
+        if player_input == '1':
+            print('input is 1')
             canvas.create_image(5, 5, image=mark_img, anchor='nw')
-            square1 = mark_str
-        else:
-            prompt = tkinter.Label(text=f"Player {mark_str} - Choose a free square")
-            prompt.config(font=('Georgia', 16, 'normal'), pady=10)
-            prompt.grid(row=1, column=1)
-            return 0
-
-    elif player_input == '2':
-        global square2
-        if square2 == '':
+        elif player_input == '2':
             canvas.create_image(150, 5, image=mark_img, anchor='n')
-            square2 = mark_str
-        else:
-            prompt = tkinter.Label(text=f"Player {mark_str} - Choose a free square")
-            prompt.config(font=('Georgia', 16, 'normal'), pady=10)
-            prompt.grid(row=1, column=1)
-            return 0
-
-
-    elif player_input == '3':
-        global square3
-        if square3 == '':
+        elif player_input == '3':
             canvas.create_image(295, 5, image=mark_img, anchor='ne')
-            square3 = mark_str
-        else:
-            prompt = tkinter.Label(text=f"Player {mark_str} - Choose a free square")
-            prompt.config(font=('Georgia', 16, 'normal'), pady=10)
-            prompt.grid(row=1, column=1)
-            return 0
-
-    elif player_input == '4':
-        global square4
-        if square4 == '':
+        elif player_input == '4':
             canvas.create_image(5, 150, image=mark_img, anchor='w')
-            square4 = mark_str
-        else:
-            prompt = tkinter.Label(text=f"Player {mark_str} - Choose a free square")
-            prompt.config(font=('Georgia', 16, 'normal'), pady=10)
-            prompt.grid(row=1, column=1)
-            return 0
-
-    elif player_input == '5':
-        global square5
-        if square5 == '':
+        elif player_input == '5':
             canvas.create_image(150, 150, image=mark_img, anchor='c')
-            square5 = mark_str
-        else:
-            prompt = tkinter.Label(text=f"Player {mark_str} - Choose a free square")
-            prompt.config(font=('Georgia', 16, 'normal'), pady=10)
-            prompt.grid(row=1, column=1)
-            return 0
-
-
-    elif player_input == '6':
-        global square6
-        if square6 == '':
+        elif player_input == '6':
             canvas.create_image(295, 150, image=mark_img, anchor='e')
-            square6 = mark_str
-        else:
-            prompt = tkinter.Label(text=f"Player {mark_str} - Choose a free square")
-            prompt.config(font=('Georgia', 16, 'normal'), pady=10)
-            prompt.grid(row=1, column=1)
-            return 0
-
-    elif player_input == '7':
-        global square7
-        if square7 == '':
+        elif player_input == '7':
             canvas.create_image(5, 295, image=mark_img, anchor='sw')
-            square7 = mark_str
-        else:
-            prompt = tkinter.Label(text=f"Player {mark_str} - Choose a free square")
-            prompt.config(font=('Georgia', 16, 'normal'), pady=10)
-            prompt.grid(row=1, column=1)
-            return 0
-
-    elif player_input == '8':
-        global square8
-        if square8 == '':
+        elif player_input == '8':
             canvas.create_image(150, 295, image=mark_img, anchor='s')
-            square8 = mark_str
-        else:
-            prompt = tkinter.Label(text=f"Player {mark_str} - Choose a free square")
-            prompt.config(font=('Georgia', 16, 'normal'), pady=10)
-            prompt.grid(row=1, column=1)
-            return 0
-
-    elif player_input == '9':
-        global square9
-        if square9 == '':
+        elif player_input == '9':
             canvas.create_image(295, 295, image=mark_img, anchor='se')
-            square9 = mark_str
-        else:
-            prompt = tkinter.Label(text=f"Player {mark_str} - Choose a free square")
+
+        engine.check_result()
+        if engine.game_over and engine.draw:
+            prompt = tkinter.Label(text=f"It's a draw", width=30)
             prompt.config(font=('Georgia', 16, 'normal'), pady=10)
             prompt.grid(row=1, column=1)
-            return 0
-
-
-    #Check which player's turn it is and update the prompt label
-    if counter % 2 != 0:
-        counter += 1
-        playerx_turn = False
-        prompt = tkinter.Label(text="Player O - It's Your Turn")
-        prompt.config(font=('Georgia', 16, 'normal'), pady=10, width=30)
-        prompt.grid(row=1, column=1)
-    elif counter % 2 == 0:
-        counter += 1
-        playerx_turn = True
-        prompt = tkinter.Label(text="Player X - It's Your Turn")
-        prompt.config(font=('Georgia', 16, 'normal'), pady=10, width=30)
+        elif engine.game_over and  engine.draw == False:
+            prompt = tkinter.Label(text=f"Player {engine.mark_str} - You Win!", width=30)
+            prompt.config(font=('Georgia', 16, 'normal'), pady=10)
+            prompt.grid(row=1, column=1)
+        else:
+            engine.set_turns()
+    else:
+        prompt = tkinter.Label(text=f"Player {engine.mark_str} - Choose a free square")
+        prompt.config(font=('Georgia', 16, 'normal'), pady=10)
         prompt.grid(row=1, column=1)
 
-
-
-    #Check for the draw
-    if square1 != "" and square2 != "" and square3 != "" and square4 != "" and square5 != "" and square6 != "" and square7 != "" and square8 != "" and square9 != "":
-        prompt = tkinter.Label(text=f"It's a draw")
-        prompt.config(font=('Georgia', 16, 'normal'), pady=10, width=20)
-        prompt.grid(row=1, column=1)
+    #_______________________________Disable button if game is over____________________________#
+    if engine.game_over:
         submit_button.config(state='disabled')
-
-    #Check for the win
-    if square1 == mark_str and square2 == mark_str and square3 == mark_str:
-        prompt = tkinter.Label(text=f"Player {mark_str} - You Win!")
-        prompt.config(font=('Georgia', 16, 'normal'), pady=10, width=20)
-        prompt.grid(row=1, column=1)
-        submit_button.config(state='disabled')
-    elif square4 == mark_str and square5 == mark_str and square6 == mark_str:
-        prompt = tkinter.Label(text=f"Player {mark_str} - You Win!")
-        prompt.config(font=('Georgia', 16, 'normal'), pady=10, width=20)
-        prompt.grid(row=1, column=1)
-        submit_button.config(state='disabled')
-    elif square7 == mark_str and square8 == mark_str and square9 == mark_str:
-        prompt = tkinter.Label(text=f"Player {mark_str} - You Win!")
-        prompt.config(font=('Georgia', 16, 'normal'), pady=10, width=20)
-        prompt.grid(row=1, column=1)
-        submit_button.config(state='disabled')
-    elif square1 == mark_str and square4 == mark_str and square7 == mark_str:
-        prompt = tkinter.Label(text=f"Player {mark_str} - You Win!")
-        prompt.config(font=('Georgia', 16, 'normal'), pady=10, width=20)
-        prompt.grid(row=1, column=1)
-        submit_button.config(state='disabled')
-    elif square2 == mark_str and square5 == mark_str and square8 == mark_str:
-        prompt = tkinter.Label(text=f"Player {mark_str} - You Win!")
-        prompt.config(font=('Georgia', 16, 'normal'), pady=10, width=20)
-        prompt.grid(row=1, column=1)
-        submit_button.config(state='disabled')
-    elif square3 == mark_str and square6 == mark_str and square9 == mark_str:
-        prompt = tkinter.Label(text=f"Player {mark_str} - You Win!")
-        prompt.config(font=('Georgia', 16, 'normal'), pady=10, width=20)
-        prompt.grid(row=1, column=1)
-        submit_button.config(state='disabled')
-    elif square1 == mark_str and square5 == mark_str and square9 == mark_str:
-        prompt = tkinter.Label(text=f"Player {mark_str} - You Win!")
-        prompt.config(font=('Georgia', 16, 'normal'), pady=10, width=20)
-        prompt.grid(row=1, column=1)
-        submit_button.config(state='disabled')
-    elif square3 == mark_str and square5 == mark_str and square7 == mark_str:
-        prompt = tkinter.Label(text=f"Player {mark_str} - You Win!")
-        prompt.config(font=('Georgia', 16, 'normal'), pady=10, width=20)
-        prompt.grid(row=1, column=1)
-        submit_button.config(state='disabled')
-
-
-
     entry.delete(0, 'end')
+
+
 
 
 
@@ -271,7 +134,7 @@ entry.config()
 entry.grid(row=4, column=1)
 
 
-submit_button = tkinter.Button(text='Submit', command=mark_square)
+submit_button = tkinter.Button(text='Submit', command=command)
 submit_button.grid(row=5, column=1)
 
 
