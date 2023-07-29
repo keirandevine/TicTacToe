@@ -1,4 +1,7 @@
 import tkinter
+from game_engine import GameEngine
+
+engine = GameEngine()
 
 #_________________________________TKinter Window Set Up__________________________________#
 
